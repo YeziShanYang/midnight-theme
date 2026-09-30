@@ -1,0 +1,39 @@
+/* ---------------------------------------------------------------------
+   Midnight Glow — soft background glows for Qt Creator
+   Loaded by "Qt Creator (Glow).command". Needs the "Midnight Glow"
+   color scheme, whose editor background is see-through so this shows.
+
+   Gradient coordinates run 0..1 across each widget:
+   cx/cy = centre of the glow, radius = how far it spreads,
+   stop:0 = colour at the centre, later stops = fade-out.
+
+   Stars are drawn over the glow from PNGs made by make-stars.py.
+   @DIR@ is replaced with the install folder by install.sh.
+   --------------------------------------------------------------------- */
+
+/* Code editor: wide violet glow from the top-right, with the tree, lake and
+   stars from bg-editor.png (make-art.py) pinned to the bottom-right so the
+   lake always sits along the bottom */
+TextEditor--TextEditorWidget {
+    background: qradialgradient(cx:1, cy:0, radius:1.6, fx:1, fy:0,
+                                stop:0 #33196a, stop:0.3 #231245,
+                                stop:0.6 #160d2c, stop:0.85 #0d0918, stop:1 #0d0918);
+    background-image: url(@DIR@/bg-editor.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Project / file trees in the sidebar: pink glow from the bottom-left,
+   a few stars at the top.
+   (Utils::NavigationTreeView has no Q_OBJECT, so match any tree view
+   inside a sidebar pane instead.) */
+Core--Internal--NavigationSubWidget QTreeView {
+    background: qradialgradient(cx:0, cy:1, radius:1.6, fx:0, fy:1,
+                                stop:0 #3a1440, stop:0.35 #25112f,
+                                stop:0.7 #150e24, stop:1 #120d20);
+    background-image: url(@DIR@/stars-sidebar.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}

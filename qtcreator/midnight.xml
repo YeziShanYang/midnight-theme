@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Midnight — Qt Creator editor color scheme, matching midnight.sty -->
+<style-scheme version="1.0" name="Midnight">
+  <style name="Text" foreground="#dcd6f2" background="#0d0918"/>
+  <style name="Link" foreground="#67e8f9" underline="true"/>
+  <style name="Selection" background="#3da78bfa"/>
+  <style name="LineNumber" foreground="#5a5478" background="#0d0918"/>
+  <style name="CurrentLine" background="#2a1f4a"/>
+  <style name="CurrentLineNumber" foreground="#a78bfa" bold="true"/>
+  <style name="SearchResult" foreground="#ffffff" background="#5b21b6"/>
+  <style name="SearchResultAlt1" foreground="#c4b5fd" background="#2e1f5d"/>
+  <style name="SearchResultAlt2" foreground="#fbcfe8" background="#4a1d3a"/>
+  <style name="SearchResultContainingFunction" foreground="#dcd6f2" background="#1d1830"/>
+  <style name="SearchScope" background="#1d1830"/>
+  <style name="Parentheses" foreground="#67e8f9" background="#2e1f5d"/>
+  <style name="ParenthesesMismatch" foreground="#ffffff" background="#9f1239"/>
+  <style name="AutoComplete" foreground="#c4b5fd" background="#2e1f5d"/>
+  <style name="Occurrences" background="#2e1f5d"/>
+  <style name="Occurrences.Unused" foreground="#6b6590"/>
+  <style name="Occurrences.Rename" foreground="#fbcfe8" background="#4a1d3a"/>
+
+  <style name="Number" foreground="#fbbf24"/>
+  <style name="String" foreground="#c3e88d"/>
+  <style name="Keyword" foreground="#c792ea"/>
+  <style name="PrimitiveType" foreground="#82aaff"/>
+  <style name="Type" foreground="#89ddff"/>
+  <style name="Namespace" foreground="#89ddff"/>
+  <style name="Function" foreground="#c4b5fd"/>
+  <style name="FunctionDefinition" foreground="#c4b5fd" bold="true"/>
+  <style name="VirtualMethod" foreground="#c4b5fd" italic="true"/>
+  <style name="Local" foreground="#dcd6f2"/>
+  <style name="Parameter" foreground="#e6e0f8" italic="true"/>
+  <style name="Field" foreground="#b9b2e0"/>
+  <style name="Static" foreground="#f0abfc" italic="true"/>
+  <style name="Global" foreground="#f0abfc"/>
+  <style name="Enumeration" foreground="#fbbf24"/>
+  <style name="Macro" foreground="#f78cb0"/>
+  <style name="Preprocessor" foreground="#f78cb0"/>
+  <style name="Attribute" foreground="#f78cb0" italic="true"/>
+  <style name="Operator" foreground="#89ddff"/>
+  <style name="Overloaded Operator" foreground="#89ddff"/>
+  <style name="Punctuation" foreground="#8c84ae"/>
+  <style name="Label" foreground="#fbbf24"/>
+  <style name="Comment" foreground="#6b6590" italic="true"/>
+  <style name="Doxygen.Comment" foreground="#7f77a8" italic="true"/>
+  <style name="Doxygen.Tag" foreground="#f472b6"/>
+  <style name="VisualWhitespace" foreground="#2e2847"/>
+  <style name="DisabledCode" foreground="#544e73" background="#110c1f"/>
+  <style name="Declaration" bold="true"/>
+  <style name="OutputArgument" italic="true"/>
+
+  <style name="QmlLocalId" foreground="#89ddff" italic="true"/>
+  <style name="QmlExternalId" foreground="#82aaff" italic="true"/>
+  <style name="QmlTypeId" foreground="#89ddff"/>
+  <style name="QmlRootObjectProperty" italic="true"/>
+  <style name="QmlScopeObjectProperty" italic="true"/>
+  <style name="QmlExternalObjectProperty" foreground="#82aaff" italic="true"/>
+  <style name="JsScopeVar" foreground="#b9b2e0" italic="true"/>
+  <style name="JsImportVar" foreground="#82aaff" italic="true"/>
+  <style name="JsGlobalVar" foreground="#82aaff" italic="true"/>
+  <style name="QmlStateName" foreground="#c792ea" italic="true"/>
+  <style name="Binding" foreground="#f78cb0"/>
+
+  <style name="AddedLine" foreground="#c3e88d"/>
+  <style name="RemovedLine" foreground="#fb7185"/>
+  <style name="DiffFile" foreground="#a78bfa"/>
+  <style name="DiffLocation" foreground="#67e8f9"/>
+  <style name="DiffFileLine" foreground="#0d0918" background="#a78bfa"/>
+  <style name="DiffContextLine" foreground="#0d0918" background="#6b6590"/>
+  <style name="DiffSourceLine" background="#3a1424"/>
+  <style name="DiffSourceChar" foreground="#ffffff" background="#9f1239"/>
+  <style name="DiffDestLine" background="#1e3320"/>
+  <style name="DiffDestChar" foreground="#0d0918" background="#a3d977"/>
+  <style name="MergeConflictCurrent" background="#1e2a4a"/>
+  <style name="MergeConflictIncoming" background="#3a1d4a"/>
+  <style name="MergeConflictBase" background="#1d1830"/>
+  <style name="LogChangeLine" foreground="#fb7185"/>
+  <style name="LogAuthorName" foreground="#c4b5fd"/>
+  <style name="LogCommitDate" foreground="#67e8f9"/>
+  <style name="LogCommitHash" foreground="#f472b6"/>
+  <style name="LogCommitSubject" foreground="#dcd6f2"/>
+  <style name="LogDecoration" foreground="#fbbf24"/>
+
+  <style name="Info" underlineColor="#a78bfa" underlineStyle="DashUnderline"/>
+  <style name="InfoContext" underlineColor="#a78bfa" underlineStyle="DotLine"/>
+  <style name="Warning" underlineColor="#fbbf24" underlineStyle="SingleUnderline"/>
+  <style name="WarningContext" underlineColor="#fbbf24" underlineStyle="DotLine"/>
+  <style name="Error" underlineColor="#fb7185" underlineStyle="SingleUnderline"/>
+  <style name="ErrorContext" underlineColor="#fb7185" underlineStyle="DotLine"/>
+</style-scheme>

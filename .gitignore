@@ -1,0 +1,10 @@
+# The background picture isn't ours to share (see README), so neither is
+# anything built from it
+qtcreator/art.jpg
+qtcreator/bg-editor*.png
+qtcreator/bg-overleaf*.png
+overleaf/bg-overleaf*.png
+overleaf/*-custom.user.css
+
+__pycache__/
+.DS_Store

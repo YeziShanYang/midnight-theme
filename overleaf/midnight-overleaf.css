@@ -1,0 +1,157 @@
+/* ==UserStyle==
+@name         Midnight for Overleaf
+@namespace    midnight-overleaf
+@version      1.0.0
+@description  Midnight violet theme for Overleaf, with soft background glows and stars
+@preprocessor default
+==/UserStyle== */
+
+/* ---------------------------------------------------------------------
+   Source for the .user.css files. Edit this file, then run
+   `python3 build.py`, which swaps the image placeholders below for the
+   images themselves, so the style needs no hosting.
+
+   Best with Overleaf's Overall theme set to Dark. The editor's own
+   theme doesn't matter much, since the colours below override it.
+
+   Gradient sizes are relative to each panel: "160% 160% at 100% 0%"
+   means the glow's centre is the top-right corner and it spreads 1.6x
+   the panel's size. Later colour stops are the fade-out.
+   --------------------------------------------------------------------- */
+
+@-moz-document domain("overleaf.com") {
+
+/* ---- Palette: Overleaf builds its whole UI from these variables ---- */
+:root, [data-theme] {
+    /* Neutral greys -> purple-tinted scale (panels, toolbars, text) */
+    --white: #ffffff !important;
+    --neutral-05: #fbfafe !important;
+    --neutral-10: #e6e0f8 !important;
+    --neutral-20: #d9d2f0 !important;
+    --neutral-30: #c4bce3 !important;
+    --neutral-40: #a29ac7 !important;
+    --neutral-50: #8c84ae !important;
+    --neutral-60: #6e6790 !important;
+    --neutral-70: #3a3458 !important;
+    --neutral-80: #251f3b !important;
+    --neutral-85: #1d1830 !important;
+    --neutral-90: #120d20 !important;
+
+    /* Blue (links, focus rings, info) -> violet */
+    --blue-10: #ede9fe !important;
+    --blue-20: #ddd6fe !important;
+    --blue-30: #c4b5fd !important;
+    --blue-40: #a78bfa !important;
+    --blue-50: #7c3aed !important;
+    --blue-60: #6d28d9 !important;
+    --blue-70: #5b21b6 !important;
+
+    /* Primary buttons (Recompile etc.) -> violet; success messages stay green */
+    --bg-accent-01: #7c3aed !important;
+    --bg-accent-02: #6d28d9 !important;
+    --bg-accent-03: #2e1f5d !important;
+    --link-web-dark: #c4b5fd !important;
+    --link-web-hover-dark: #ddd6fe !important;
+    --link-web-visited-dark: #c4b5fd !important;
+
+    /* File tree */
+    --file-tree-item-hover-bg: rgba(167, 139, 250, 0.12) !important;
+    --file-tree-item-selected-bg: #4c1d95 !important;
+    --file-tree-item-selected-color: #ede9fe !important;
+    --file-tree-item-dragging-bg: #7c3aed !important;
+}
+
+/* ---- Code editor: violet glow from the top-right, with stars along the
+        top, or your picture (see README) in the bottom-right ---- */
+.cm-editor {
+    background:
+        url(@BG_EDITOR@) @BG_EDITOR_POS@ / @BG_EDITOR_SIZE@ no-repeat,
+        radial-gradient(160% 160% at 100% 0%,
+                        #33196a 0%, #231245 30%, #160d2c 60%, #0d0918 85%) !important;
+    color: #dcd6f2 !important;
+}
+.cm-editor .cm-scroller,
+.cm-editor .cm-content,
+.cm-editor .cm-gutters {
+    background: transparent !important;
+}
+.cm-editor .cm-gutters {
+    color: #5a5478 !important;
+    border-right: none !important;
+}
+.cm-editor .cm-activeLine {
+    background: rgba(167, 139, 250, 0.08) !important;
+}
+.cm-editor .cm-activeLineGutter {
+    background: rgba(167, 139, 250, 0.10) !important;
+    color: #a78bfa !important;
+}
+.cm-editor .cm-cursor,
+.cm-editor .cm-dropCursor {
+    border-left-color: #a78bfa !important;
+}
+.cm-editor .cm-selectionBackground,
+.cm-editor.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
+.cm-editor .cm-content ::selection {
+    background: rgba(167, 139, 250, 0.28) !important;
+}
+.cm-editor .cm-searchMatch {
+    background: rgba(91, 33, 182, 0.55) !important;
+    box-shadow: none !important;
+}
+.cm-editor .cm-searchMatch-selected,
+.cm-editor .cm-searchMatch.cm-searchMatch-selected {
+    background: #7c3aed !important;
+}
+.cm-editor .cm-selectionMatch {
+    background: rgba(46, 31, 93, 0.8) !important;
+    box-shadow: none !important;
+}
+.cm-editor.cm-focused .cm-matchingBracket {
+    background: rgba(46, 31, 93, 0.9) !important;
+    color: #67e8f9 !important;
+    outline: none !important;
+}
+.cm-editor.cm-focused .cm-nonmatchingBracket {
+    background: #9f1239 !important;
+    color: #ffffff !important;
+    outline: none !important;
+}
+
+/* ---- LaTeX syntax colours (same palette as the Qt Creator scheme) ---- */
+.cm-editor .tok-typeName      { color: #c792ea !important; }                     /* \section, \textbf, ... */
+.cm-editor .tok-keyword       { color: #f78cb0 !important; }                     /* \documentclass, \usepackage, \cite, \ref, \label, &, ~, \\ */
+.cm-editor .tok-attributeValue{ color: #89ddff !important; font-style: normal !important; } /* environment names, labels, package options */
+.cm-editor .tok-string        { color: #c3e88d !important; }                     /* maths */
+.cm-editor .tok-literal       { color: #fbbf24 !important; }                     /* \{ \% \( \[ ... */
+.cm-editor .tok-number        { color: #fbbf24 !important; }
+.cm-editor .tok-punctuation   { color: #8c84ae !important; }                     /* braces and brackets */
+.cm-editor .tok-comment       { color: #6b6590 !important; font-style: italic !important; }
+.cm-editor .tok-link,
+.cm-editor .tok-url           { color: #67e8f9 !important; }
+.cm-editor .tok-invalid       { color: #ffffff !important; background: #9f1239 !important; }
+
+/* ---- Autocomplete and other editor popups ---- */
+.cm-tooltip {
+    background: #171227 !important;
+    border: 1px solid #3a3458 !important;
+    color: #dcd6f2 !important;
+}
+.cm-tooltip-autocomplete ul li[aria-selected] {
+    background: #4c1d95 !important;
+    color: #ffffff !important;
+}
+
+/* ---- File tree: pink glow from the bottom-left, a few stars at the top ---- */
+.file-tree {
+    background:
+        url(@STARS_SIDEBAR@) left top / @STARS_SIDEBAR_SIZE@ no-repeat,
+        radial-gradient(160% 160% at 0% 100%,
+                        #3a1440 0%, #25112f 35%, #150e24 70%, #120d20 100%) !important;
+}
+.file-tree .file-tree-inner,
+.file-tree ul.file-tree-list {
+    background: transparent !important;
+}
+
+}
