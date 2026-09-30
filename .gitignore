@@ -8,3 +8,8 @@ overleaf/*-custom.user.css
 
 __pycache__/
 .DS_Store
+
+# moonlight-notes: these contain the pink-moon wallpaper
+moonlight-notes/moonlight.sty
+moonlight-notes/example.pdf
+moonlight-notes/tools/background-preview.jpg
