@@ -8,13 +8,16 @@ cross-fades them through the middle, so every page gets both. Then it frosts
 the result like glass (blurred, with a milky layer) and darkens it for
 readable text. The background goes into moonlight.sty as a small text-only
 PDF, between the "% >>> background" and "% <<< background" lines, so the .sty
-works on its own. Needs Pillow (pip install pillow).
+works on its own. If there's no moonlight.sty yet, it starts from
+moonlight-template.sty (the style without a picture). Needs Pillow
+(pip install pillow).
 """
 import base64, io, os, re, sys
 from PIL import Image, ImageFilter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 STY = os.path.join(HERE, "..", "moonlight.sty")
+TEMPLATE = os.path.join(HERE, "moonlight-template.sty")
 
 PAGE_W, PAGE_H = 1500, 2121      # pixels for an A4 page (about 180 dpi)
 TOP = (0.0, 0.40)                # part of the picture kept at the top (0..1 down)
@@ -27,7 +30,7 @@ FROST = 5                        # blur radius in px: how "frosted" the glass is
 FROST_MIX = 0.55                 # 0 = sharp picture, 1 = fully blurred
 MILK = ((236, 222, 255), 0.06)   # pale layer that makes the glass look frosted
 VEIL = ((14, 9, 28), 0.34)       # dark layer so the text stays readable
-FADE = 0.30                      # how far the whole picture fades into the page colour
+FADE = 0.51                      # how far the whole picture fades into the page colour
 PAGE_COLOUR = (18, 12, 34)       # bgc in moonlight.sty
 QUALITY = 84                     # JPEG quality
 
@@ -104,7 +107,7 @@ if __name__ == "__main__":
     page.save(os.path.join(HERE, "background-preview.jpg"), quality=90)
     pdf = text_pdf(buf.getvalue(), PAGE_W, PAGE_H)
     assert "\\end{filecontents" not in pdf
-    sty = open(STY).read()
+    sty = open(STY if os.path.exists(STY) else TEMPLATE).read()
     block = ("% >>> background (written by tools/make-background.py; don't edit by hand)\n"
              "\\begin{filecontents*}[overwrite]{moonlight-background.pdf}\n"
              + pdf + "\\end{filecontents*}\n% <<< background\n")

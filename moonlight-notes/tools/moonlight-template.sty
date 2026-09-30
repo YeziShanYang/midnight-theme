@@ -1,0 +1,423 @@
+% =====================================================================
+%  moonlight.sty  --  pink-moon night style for math and CS notes
+%
+%  Put this file next to your .tex file and load it right after
+%  \documentclass:     \usepackage{moonlight}
+%  Options:            \usepackage[letter]{moonlight}        US Letter (default A4)
+%                      \usepackage[nobackground]{moonlight}  plain dark pages
+%  Works with pdfLaTeX (Overleaf's default), XeLaTeX and LuaLaTeX.
+%  The background picture is stored at the bottom of this file, so
+%  nothing else needs uploading. See example.tex for every feature.
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{moonlight}[2026/09/29 Moonlight notes style]
+
+\newif\ifmoon@background \moon@backgroundtrue
+\def\moon@paper{a4paper}
+\DeclareOption{a4}{\def\moon@paper{a4paper}}
+\DeclareOption{letter}{\def\moon@paper{letterpaper}}
+\DeclareOption{nobackground}{\moon@backgroundfalse}
+\ProcessOptions\relax
+
+% ---------------------------------------------------------------------
+%  Packages
+% ---------------------------------------------------------------------
+\RequirePackage[\moon@paper, left=1.6cm, right=1.6cm, top=1.9cm, bottom=1.7cm,
+                headheight=13pt, headsep=8pt, footskip=18pt]{geometry}
+\RequirePackage{iftex}
+\ifPDFTeX \RequirePackage[T1]{fontenc} \fi
+
+\RequirePackage{amsmath, amsthm, mathtools}
+% Fira Sans for text with matching sans-serif maths (both are on Overleaf);
+% falls back to Helvetica if Fira isn't installed
+\IfFileExists{FiraSans.sty}
+  {\RequirePackage[sfdefault]{FiraSans}}
+  {\RequirePackage[scaled=0.95]{helvet}\renewcommand{\familydefault}{\sfdefault}}
+\IfFileExists{FiraMono.sty}{\RequirePackage[scale=0.84]{FiraMono}}{}
+\RequirePackage[scaled=0.97]{newtxsf}
+\RequirePackage{bm}
+\RequirePackage{microtype}
+
+\RequirePackage[table]{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{eso-pic}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, fadings, shapes.geometric,
+                decorations.pathreplacing}
+\RequirePackage{tikz-cd}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{listings}
+\RequirePackage{algpseudocode}
+\RequirePackage{booktabs}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{hyperref}
+
+% ---------------------------------------------------------------------
+%  Palette  (taken from the picture; edit these to re-theme everything)
+% ---------------------------------------------------------------------
+\definecolor{bgc}{HTML}{120C22}        % page colour behind the picture
+\definecolor{boxbg}{HTML}{150E28}      % frosted fill of boxes
+\definecolor{textc}{HTML}{EFEAFB}      % body text
+\definecolor{muted}{HTML}{A49BC4}      % secondary text
+\definecolor{moon}{HTML}{F58AC0}       % the moon: theorems, headings
+\definecolor{moondeep}{HTML}{D9468F}
+\definecolor{petal}{HTML}{F0A6D8}      % blossoms: lemmas, propositions
+\definecolor{violet}{HTML}{B69CFF}     % definitions
+\definecolor{violetlight}{HTML}{D6CAFF}
+\definecolor{bluebell}{HTML}{8FA6FF}   % blue flowers: examples, code
+\definecolor{leaf}{HTML}{8ED9B0}       % leaves: tips
+\definecolor{ember}{HTML}{FF8A8A}      % warnings
+\definecolor{glowc}{HTML}{FFC46B}      % highlights
+% syntax colours
+\definecolor{kw}{HTML}{E79BE0}
+\definecolor{types}{HTML}{9DB2FF}
+\definecolor{stdc}{HTML}{8FE0F0}
+\definecolor{str}{HTML}{BDE89A}
+\definecolor{comment}{HTML}{8A80AE}
+\definecolor{directive}{HTML}{FF9EBB}
+\definecolor{codetext}{HTML}{E4DDF6}
+
+\pagecolor{bgc}
+\color{textc}
+\hypersetup{colorlinks=true, linkcolor=petal, citecolor=petal, urlcolor=bluebell}
+
+% ---------------------------------------------------------------------
+%  Page background: the picture, covering the whole page
+% ---------------------------------------------------------------------
+\newcommand{\moon@bgfile}{moonlight-background.pdf}
+\newcommand{\moon@background}{%
+  \IfFileExists{\moon@bgfile}{%
+    \put(0.5\paperwidth, 0.5\paperheight){\makebox(0,0){%
+      % the picture is A4-shaped: fill the page, cropping whichever way it overhangs
+      \ifdim\dimexpr\paperwidth*1414/1000\relax>\paperheight
+        \includegraphics[width=\paperwidth]{\moon@bgfile}%
+      \else
+        \includegraphics[height=\paperheight]{\moon@bgfile}%
+      \fi}}}{}}
+\ifmoon@background \AddToShipoutPictureBG{\moon@background} \fi
+
+% ---------------------------------------------------------------------
+%  Density: tight paragraphs, lists and display maths
+% ---------------------------------------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt plus 1pt}
+\setlist{nosep, topsep=2pt, partopsep=0pt, leftmargin=1.3em}
+\setlist[itemize,1]{label={\color{moon}\scriptsize$\bullet$}}
+\setlist[itemize,2]{label={\color{violet}\scriptsize$\circ$}}
+\setlist[enumerate,1]{label={\color{moon}\bfseries\arabic*.}}
+\setlist[enumerate,2]{label={\color{violet}(\alph*)}}
+\newcommand{\moon@mathskips}{%
+  \setlength{\abovedisplayskip}{4pt plus 2pt minus 1pt}%
+  \setlength{\belowdisplayskip}{4pt plus 2pt minus 1pt}%
+  \setlength{\abovedisplayshortskip}{1pt plus 2pt}%
+  \setlength{\belowdisplayshortskip}{3pt plus 2pt}}
+\AtBeginDocument{\moon@mathskips \g@addto@macro\normalsize{\moon@mathskips}}
+\setlength{\jot}{2pt}
+
+% ---------------------------------------------------------------------
+%  A little five-petal blossom:  \blossom  or  \blossom[violet]
+% ---------------------------------------------------------------------
+\newcommand{\blossom}[1][moon]{%
+  \tikz[baseline=-0.55ex, x=1ex, y=1ex]{%
+    \foreach \a in {90, 162, 234, 306, 378}
+      \fill[#1, rotate=\a] (0.42, 0) ellipse (0.40 and 0.27);
+    \fill[#1!35!white] (0, 0) circle (0.16);}}
+
+% ---------------------------------------------------------------------
+%  Boxes: square corners, a coloured rule down the left, a tinted title
+%  bar and a frosted fill, after https://xyquadrat.ch/blog/latex-boxes/
+% ---------------------------------------------------------------------
+\tcbset{
+  moonbase/.style={enhanced, breakable, arc=0pt, outer arc=0pt,
+    frame hidden, colframe=#1, titlerule=0mm,
+    colback=boxbg, opacityback=0.78,
+    colbacktitle=#1!24!boxbg, opacitybacktitle=0.92,
+    coltitle=#1!45!white, coltext=textc, fonttitle=\bfseries\small,
+    borderline west={1mm}{0pt}{#1},
+    left=2.4mm, right=3mm, top=1.3mm, bottom=1.4mm,
+    lefttitle=2.4mm, toptitle=0.7mm, bottomtitle=0.6mm,
+    before skip=5pt plus 2pt, after skip=5pt plus 2pt},
+  % a quieter variant for supporting results: thinner rule, fainter bar
+  moonsub/.style={moonbase=#1, borderline west={0.6mm}{0pt}{#1!80!boxbg},
+    colbacktitle=#1!14!boxbg, opacityback=0.7},
+}
+
+% title:  (blossom) Theorem 2.3  Name
+\newcommand{\moon@title}[4]{% colour, name, number, optional name
+  \blossom[#1]\hspace{0.45em}#2\ifx\relax#3\relax\else~#3\fi
+  \if\relax\detokenize{#4}\relax\else
+    \hspace{0.5em}{\mdseries\color{#1!25!white}#4}\fi}
+
+% \moon@newbox{env}{Name}{colour}{style}{counter or empty}
+% Numbered boxes also get a starred, unnumbered version: theorem*, ...
+\newcommand{\moon@newbox}[5]{%
+  \if\relax\detokenize{#5}\relax
+    \newenvironment{#1}[1][]
+      {\begin{tcolorbox}[#4=#3, title={\moon@title{#3}{#2}{}{##1}}]}
+      {\end{tcolorbox}}%
+  \else
+    \newenvironment{#1}[1][]
+      {\refstepcounter{#5}%
+       \begin{tcolorbox}[#4=#3, title={\moon@title{#3}{#2}{\csname the#5\endcsname}{##1}}]}
+      {\end{tcolorbox}}%
+    \newenvironment{#1*}[1][]
+      {\begin{tcolorbox}[#4=#3, title={\moon@title{#3}{#2}{}{##1}}]}
+      {\end{tcolorbox}}%
+  \fi}
+
+% Theorem-like boxes share one counter, numbered within sections (2.1, 2.2, ...)
+\newcounter{moonthm}[section]
+\renewcommand{\themoonthm}{\ifnum\value{section}>0 \thesection.\fi\arabic{moonthm}}
+\moon@newbox{definition} {Definition} {violet}   {moonbase}{moonthm}
+\moon@newbox{theorem}    {Theorem}    {moon}     {moonbase}{moonthm}
+\moon@newbox{lemma}      {Lemma}      {petal}    {moonsub} {moonthm}
+\moon@newbox{proposition}{Proposition}{petal}    {moonsub} {moonthm}
+\moon@newbox{corollary}  {Corollary}  {petal}    {moonsub} {moonthm}
+\moon@newbox{claim}      {Claim}      {petal}    {moonsub} {moonthm}
+\moon@newbox{conjecture} {Conjecture} {violet}   {moonsub} {moonthm}
+\moon@newbox{axiom}      {Axiom}      {violet}   {moonsub} {moonthm}
+\moon@newbox{example}    {Example}    {bluebell} {moonbase}{moonthm}
+
+% Problems have their own counter (1, 2, 3, ...); solutions aren't numbered
+\newcounter{moonprob}
+\moon@newbox{problem}    {Problem}    {moondeep} {moonbase}{moonprob}
+\moon@newbox{exercise}   {Exercise}   {moondeep} {moonsub} {moonprob}
+\moon@newbox{solution}   {Solution}   {petal}    {moonsub} {}
+
+% Asides
+\moon@newbox{remark}     {Remark}     {bluebell} {moonsub} {}
+\moon@newbox{note}       {Note}       {bluebell} {moonsub} {}
+\moon@newbox{intuition}  {Intuition}  {violet}   {moonsub} {}
+\moon@newbox{tip}        {Tip}        {leaf}     {moonsub} {}
+\moon@newbox{warning}    {Watch out}  {ember}    {moonbase}{}
+\moon@newbox{summary}    {Summary}    {glowc}    {moonbase}{}
+
+% Your own:  \newmoonbox{env}{Name}{colour}{moonbase or moonsub}{counter or empty}
+\newcommand{\newmoonbox}{\moon@newbox}
+
+% Proofs: amsthm's proof (so \qedhere works), with a blossom for QED
+\renewcommand{\qedsymbol}{\blossom[moon]}
+\renewcommand{\proofname}{Proof}
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}\normalfont\topsep2pt\relax
+  \trivlist\item[\hskip\labelsep{\color{petal}\bfseries\itshape #1.}]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+
+% Words being defined:  \term{bijection}
+\newcommand{\term}[1]{{\color{violetlight}\bfseries #1}}
+% Highlighted text:  \hl{remember this}
+\newtcbox{\hl}[1][glowc]{on line, enhanced, frame hidden, arc=0pt, coltext=textc,
+  colback=#1, opacityback=0.18, boxsep=0pt, left=2pt, right=2pt, top=1pt, bottom=1pt}
+% Boxed final answer in maths:  \ans{x = 3}
+\newtcbox{\ans}[1][moon]{on line, enhanced, frame hidden, arc=0pt, coltext=textc, colback=#1,
+  opacityback=0.16, borderline={0.5pt}{0pt}{#1}, boxsep=0pt,
+  left=3pt, right=3pt, top=2pt, bottom=2pt, before upper=$\displaystyle, after upper=$}
+
+% ---------------------------------------------------------------------
+%  Maths shortcuts
+% ---------------------------------------------------------------------
+\newcommand{\N}{\mathbb{N}}  \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}  \newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}  \newcommand{\F}{\mathbb{F}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}        % \abs{x}, \abs*{x} grows
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\paren}{(}{)}
+\DeclarePairedDelimiter{\inner}{\langle}{\rangle}
+\DeclarePairedDelimiter{\set}{\{}{\}}                % \set{1, 2, 3}
+\DeclarePairedDelimiterX{\setof}[2]{\{}{\}}{#1 \,\delimsize\vert\, #2}  % \setof{x}{x > 0}
+\newcommand{\given}{\mid}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}              % \int f(x) \dd x
+\newcommand{\deriv}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+\newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\T}{^{\mathsf{T}}}                       % A\T
+\newcommand{\inv}{^{-1}}
+\newcommand{\compl}{^{\mathsf{c}}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\polylog}{polylog}
+% probability
+\newcommand{\Prob}{\operatorname{\mathbb{P}}}        % \Prob[A \given B]
+\newcommand{\E}{\operatorname{\mathbb{E}}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+% algorithms
+\newcommand{\bigO}[1]{O\!\paren*{#1}}
+\newcommand{\bigT}[1]{\Theta\!\paren*{#1}}
+\newcommand{\bigOm}[1]{\Omega\!\paren*{#1}}
+\newcommand{\littleo}[1]{o\!\paren*{#1}}
+\newcommand{\littleom}[1]{\omega\!\paren*{#1}}
+\newcommand{\CC}{C\nolinebreak\hspace{-.05em}\raisebox{.35ex}{\scalebox{0.7}{\bfseries +}}\nolinebreak\hspace{-.12em}\raisebox{.35ex}{\scalebox{0.7}{\bfseries +}}}
+
+% ---------------------------------------------------------------------
+%  Code
+% ---------------------------------------------------------------------
+\lstdefinestyle{moonlight}{
+  language=C++,
+  basicstyle=\ttfamily\small\color{codetext},
+  keywordstyle=\color{kw},
+  keywordstyle=[2]\color{types},
+  keywordstyle=[3]\color{stdc},
+  deletekeywords={int,double,float,char,bool,void,long,short,unsigned,signed},
+  morekeywords={nullptr, constexpr, override, noexcept, decltype, final,
+                concept, requires, co_await, co_return, co_yield},
+  morekeywords=[2]{int,double,float,char,bool,void,long,short,unsigned,
+                   signed,auto,size_t},
+  morekeywords=[3]{std,vector,string,map,unordered_map,set,pair,cout,cin,
+                   endl,unique_ptr,shared_ptr,make_unique,array,list,queue,
+                   stack,sort,swap,move},
+  directivestyle=\color{directive},
+  commentstyle=\color{comment}\itshape,
+  stringstyle=\color{str},
+  numbers=left, numberstyle=\scriptsize\color{muted!70!bgc}, numbersep=8pt,
+  showstringspaces=false, breaklines=true, tabsize=4,
+  columns=fullflexible, keepspaces=true, upquote=true,
+  aboveskip=0pt, belowskip=0pt,
+}
+\lstset{style=moonlight}
+
+% Code window: filename in the title bar, darker frosted fill
+\tcbset{
+  codewindow/.style={moonbase=bluebell, listing only,
+    listing options={style=moonlight},
+    colback=black, opacityback=0.55,
+    title={\ttfamily\mdseries\small #1}, fonttitle={},
+    left=6mm, top=1mm, bottom=1mm},
+  % language of a code block:  \begin{codeblock}[lang=Python]{sort.py}
+  lang/.style={listing options={style=moonlight, language=#1}},
+}
+
+% Code typed into your notes:
+%   \begin{codeblock}{main.cpp} ... \end{codeblock}
+%   \begin{codeblock}[lang=Python]{sort.py} ... \end{codeblock}
+\newtcblisting{codeblock}[2][]{codewindow={#2}, #1}
+
+% Code from a file in your project:
+%   \codefile{code/list.cpp}
+%   \codefile[lang=Java, listing options app={firstline=5, lastline=20}]{Main.java}
+\newtcbinputlisting{\codefile}[2][]{codewindow={\detokenize{#2}}, listing file={#2}, #1}
+
+% Inline code:  \code|std::vector<int>|   (any delimiter works)
+\DeclareTotalTCBox{\code}{ v }{verbatim, on line, enhanced, frame hidden, arc=0pt, coltext=textc,
+  colback=bluebell, opacityback=0.16, boxsep=0pt,
+  left=2pt, right=2pt, top=1.5pt, bottom=1pt}
+  {\lstinline[style=moonlight, basicstyle=\ttfamily\small\color{codetext}]^#1^}
+
+% Terminal output:  \begin{terminal} ... \end{terminal}
+\newtcblisting{terminal}[1][]{moonbase=leaf, listing only, colback=black, opacityback=0.6,
+  listing options={language={}, numbers=none, basicstyle=\ttfamily\small\color{str},
+                   columns=fullflexible, aboveskip=0pt, belowskip=0pt},
+  #1}
+
+% Pseudocode:
+%   \begin{pseudo}{Binary search} \begin{algorithmic}[1] ... \end{algorithmic} \end{pseudo}
+\newtcolorbox{pseudo}[1]{moonbase=violet, unbreakable,
+  title={\moon@title{violet}{Algorithm}{}{#1}}}
+\algrenewcommand\alglinenumber[1]{{\color{muted}\scriptsize #1}}
+\algrenewcommand\algorithmicfunction{\textcolor{kw}{\textbf{function}}}
+\algrenewcommand\algorithmicprocedure{\textcolor{kw}{\textbf{procedure}}}
+\algrenewcommand\algorithmicwhile{\textcolor{kw}{\textbf{while}}}
+\algrenewcommand\algorithmicfor{\textcolor{kw}{\textbf{for}}}
+\algrenewcommand\algorithmicforall{\textcolor{kw}{\textbf{for all}}}
+\algrenewcommand\algorithmicif{\textcolor{kw}{\textbf{if}}}
+\algrenewcommand\algorithmicelse{\textcolor{kw}{\textbf{else}}}
+\algrenewcommand\algorithmicreturn{\textcolor{kw}{\textbf{return}}}
+\algrenewcommand\algorithmicdo{\textcolor{kw}{\textbf{do}}}
+\algrenewcommand\algorithmicthen{\textcolor{kw}{\textbf{then}}}
+\algrenewcommand\algorithmicend{\textcolor{kw}{\textbf{end}}}
+\algrenewcommand\algorithmicrepeat{\textcolor{kw}{\textbf{repeat}}}
+\algrenewcommand\algorithmicuntil{\textcolor{kw}{\textbf{until}}}
+\algrenewcommand\algorithmicrequire{\textcolor{petal}{\textbf{Input:}}}
+\algrenewcommand\algorithmicensure{\textcolor{petal}{\textbf{Output:}}}
+\algrenewcommand{\algorithmiccomment}[1]{\hfill{\color{comment}\itshape\(\triangleright\) #1}}
+
+% ---------------------------------------------------------------------
+%  Diagrams and plots
+% ---------------------------------------------------------------------
+\tikzset{
+  every picture/.append style={color=textc},
+  vertex/.style={circle, draw=violet, fill=boxbg, fill opacity=0.8, text opacity=1,
+                 line width=0.6pt, inner sep=1.5pt, minimum size=6.5mm, font=\small},
+  node box/.style={rectangle, draw=violet, fill=boxbg, fill opacity=0.8, text opacity=1,
+                   line width=0.6pt, minimum size=6.5mm, font=\small\ttfamily},
+  arrow/.style={-{Stealth[length=2mm]}, violetlight, line width=0.6pt},
+  edge/.style={violetlight, line width=0.6pt},
+  hot/.style={draw=moon, text=moon},
+}
+\tikzcdset{every arrow/.append style={violetlight}, every label/.append style={textc}}
+\pgfplotsset{
+  every axis/.append style={
+    axis line style={muted}, tick style={muted},
+    every tick label/.append style={font=\scriptsize, text=muted},
+    label style={font=\small, text=textc}, title style={text=textc},
+    grid style={white, opacity=0.08}, grid=major,
+    legend style={fill=boxbg, fill opacity=0.8, text opacity=1, draw=none,
+                  text=textc, font=\scriptsize},
+    cycle list={{moon, thick}, {bluebell, thick}, {leaf, thick},
+                {glowc, thick}, {violet, thick, dashed}},
+  },
+}
+
+% Tables
+\arrayrulecolor{muted!70!bgc}
+\newcommand{\thead}[1]{\textcolor{violetlight}{\bfseries #1}}
+
+% ---------------------------------------------------------------------
+%  Headings
+% ---------------------------------------------------------------------
+\newcommand{\moon@rule}{%
+  \tikz\shade[left color=moon, right color=moon!0!bgc] (0,0) rectangle (\linewidth, 0.6pt);}
+\titleformat{\section}{\Large\bfseries\color{white}}
+  {\color{moon}\thesection}{0.5em}{}[\vspace{-6pt}\moon@rule]
+\titleformat{\subsection}{\large\bfseries\color{violetlight}}
+  {\color{petal}\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{textc}}{}{0em}{}
+\titleformat{\paragraph}[runin]{\normalsize\bfseries\color{petal}}{}{0em}{}[.]
+\titlespacing*{\section}{0pt}{11pt plus 3pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt plus 2pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{6pt plus 2pt}{1pt}
+\titlespacing*{\paragraph}{0pt}{4pt plus 1pt}{0.6em}
+
+% Title block:  \title{...} \author{...} \date{...} \maketitle
+\renewcommand{\maketitle}{\par
+  {\fontsize{24}{27}\selectfont\bfseries\color{white}\@title\par}
+  \vspace{2pt}
+  {\color{muted}\@author\ifx\@date\empty\else\hspace{0.8em}\blossom[petal]\hspace{0.8em}\@date\fi\par}
+  \vspace{2pt}\moon@rule\par\vspace{4pt}}
+
+% ---------------------------------------------------------------------
+%  Header and footer
+% ---------------------------------------------------------------------
+% Change the top-left text with  \renewcommand{\headertext}{MATH 61CM}
+\newcommand{\headertext}{Notes}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[L]{\footnotesize\color{muted}\textls[100]{\MakeUppercase{\headertext}}}
+% the first section on the page, or the one carried over from the last page
+\fancyhead[R]{\footnotesize\color{muted}\nouppercase{%
+  \ifdefined\FirstMark\FirstMark{2e-left}\else\leftmark\fi}}
+\fancyfoot[C]{\footnotesize\color{muted}\thepage}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\footnotesize\color{muted}\thepage}}
+
+% ---------------------------------------------------------------------
+%  The background picture, as a small text-only PDF written out when you
+%  compile. To use another picture, see tools/make-background.py.
+% ---------------------------------------------------------------------
+% >>> background
+% <<< background
+
+\endinput

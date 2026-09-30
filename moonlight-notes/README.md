@@ -8,8 +8,12 @@ the result.
 
 > **In this repository:** `moonlight.sty` and `example.pdf` aren't included,
 > because they contain a wallpaper that isn't ours to share (see the end of
-> this file). To build `moonlight.sty`, run `tools/make-background.py` with a
-> picture of your own, as described in **Changing the picture**.
+> this file). To make `moonlight.sty`, either:
+>
+> - run `tools/make-background.py` with a picture of your own, as described
+>   in **Changing the picture**, or
+> - copy `tools/moonlight-template.sty` to `moonlight.sty` for the style
+>   without a picture (plain dark pages).
 
 ## Use it on Overleaf
 
@@ -114,7 +118,9 @@ everything:
 ## Changing the picture
 
 `tools/make-background.py` builds the background and swaps it into
-`moonlight.sty`:
+`moonlight.sty`. If there's no `moonlight.sty` yet, it makes one from
+`tools/moonlight-template.sty`. Otherwise it only replaces the picture, so
+your own edits to the style are kept:
 
 ```sh
 pip install pillow
@@ -126,6 +132,7 @@ The settings at its top control:
 - which parts of the picture are kept (`TOP`, `BOTTOM`)
 - how frosted it is (`FROST`, `FROST_MIX`, `MILK`)
 - how dark the veil over it is (`VEIL`)
+- how faint the whole picture is (`FADE`)
 - how much the bright parts are softened (`KNEE`, `SQUASH`)
 
 It also saves `tools/background-preview.jpg` so you can see the result.

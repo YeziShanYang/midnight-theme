@@ -1,12 +1,13 @@
 # Midnight
 
 A dark violet theme with soft background glows and a starry sky, for two
-editors:
+editors, plus a matching LaTeX style for notes:
 
 | Folder | For | How it's applied |
 | --- | --- | --- |
 | [`qtcreator/`](qtcreator/) | Qt Creator on macOS | An install script adds a UI theme, two editor color schemes, and an optional glow stylesheet |
 | [`overleaf/`](overleaf/) | Overleaf, in the browser | A user style for the Stylus extension |
+| [`moonlight-notes/`](moonlight-notes/) | LaTeX notes for math and CS | A `.sty` file with theorem, problem and code boxes over a night-sky background |
 
 Each folder has its own README with install steps.
 
