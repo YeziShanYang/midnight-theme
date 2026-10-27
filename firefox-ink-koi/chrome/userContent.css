@@ -1,0 +1,134 @@
+/* Ink Koi for Firefox: the new tab page and Home.
+ *
+ * Paper background, the koi painting large and faded behind the search box, and the
+ * Firefox logo, shortcuts and search box reduced to ink on paper. Dark
+ * mode follows the same Light / Dark setting as userChrome.css. */
+
+@-moz-document url("about:newtab"), url("about:home"), url("about:blank") {
+  :root {
+    --koi-paper: #f3f0e8;
+    --koi-paper-deep: #e8e4da;
+    --koi-ink: #1b1a18;
+    --koi-ink-soft: rgba(27, 26, 24, 0.55);
+    --koi-ink-faint: rgba(27, 26, 24, 0.08);
+    --koi-red: #c23a2b;
+    --koi-pair: url("ink-koi/koi-wide-light.png");
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --koi-paper: #141413;
+      --koi-paper-deep: #1f1e1c;
+      --koi-ink: #ece8de;
+      --koi-ink-soft: rgba(236, 232, 222, 0.55);
+      --koi-ink-faint: rgba(236, 232, 222, 0.08);
+      --koi-red: #d24a35;
+      --koi-pair: url("ink-koi/koi-wide-dark.png");
+    }
+  }
+
+  body {
+    background-color: var(--koi-paper) !important;
+  }
+}
+
+@-moz-document url("about:newtab"), url("about:home") {
+  :root {
+    --newtab-background-color: var(--koi-paper) !important;
+    --newtab-background-color-secondary: var(--koi-paper-deep) !important;
+    --newtab-background-card: var(--koi-paper-deep) !important;
+    --newtab-text-primary-color: var(--koi-ink) !important;
+    --newtab-text-secondary-color: var(--koi-ink-soft) !important;
+    --newtab-element-hover-color: var(--koi-ink-faint) !important;
+    --newtab-element-active-color: var(--koi-ink-faint) !important;
+    --newtab-primary-action-background: var(--koi-red) !important;
+    --newtab-wordmark-color: var(--koi-ink) !important;
+    --color-accent-primary: var(--koi-red) !important;
+    --focus-outline-color: var(--koi-red) !important;
+    /* the search box */
+    --toolbar-field-background-color: var(--koi-paper-deep) !important;
+    --toolbar-field-background-color-focus: var(--koi-paper-deep) !important;
+    --toolbar-field-text-color: var(--koi-ink) !important;
+    --toolbar-field-border-color: transparent !important;
+    --toolbar-field-border-color-focus: var(--koi-red) !important;
+  }
+
+  body {
+    background-image: var(--koi-pair) !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: auto 94vh !important;
+    background-attachment: fixed !important;
+  }
+
+  /* The search box moves down to the middle of the page, into the gap
+   * between the two koi. Firefox puts it about 230px from the top. */
+  .search-wrapper {
+    margin-block-start: max(0px, calc(50vh - 260px)) !important;
+  }
+
+  /* Ink doesn't need a logo. */
+  .logo-and-wordmark-wrapper,
+  .logo-and-wordmark {
+    display: none !important;
+  }
+
+  /* Shortcuts: no tiles, just the icon and its name. */
+  .top-site-outer .tile {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 1px solid var(--koi-ink-faint) !important;
+  }
+
+  .top-site-outer:hover .tile,
+  .top-site-outer:focus-within .tile {
+    background: var(--koi-ink-faint) !important;
+  }
+
+  .top-site-outer .tile .top-site-icon,
+  .top-site-outer .tile .icon-wrapper {
+    filter: grayscale(1) contrast(1.1);
+    opacity: 0.8;
+  }
+
+  .top-site-outer:hover .tile :is(.top-site-icon, .icon-wrapper) {
+    filter: none;
+    opacity: 1;
+  }
+
+  .top-site-outer .title {
+    color: var(--koi-ink-soft) !important;
+  }
+
+  /* The buttons for customising the page: ink, not red. */
+  .open-customization-button,
+  .add-button {
+    --button-background-color: var(--koi-paper-deep) !important;
+    --button-background-color-hover: var(--koi-paper-deep) !important;
+    --button-background-color-primary: var(--koi-paper-deep) !important;
+    --button-background-color-primary-hover: var(--koi-paper-deep) !important;
+    --button-text-color: var(--koi-ink) !important;
+    --button-text-color-primary: var(--koi-ink) !important;
+    --button-icon-fill: var(--koi-ink) !important;
+    opacity: 0.6;
+  }
+
+  .open-customization-button:hover,
+  .add-button:hover {
+    opacity: 1;
+  }
+
+  .personalize-button {
+    background-color: transparent !important;
+    opacity: 0.5;
+  }
+
+  .personalize-button:hover {
+    opacity: 1;
+  }
+
+  ::selection {
+    background-color: var(--koi-red);
+    color: var(--koi-paper);
+  }
+}

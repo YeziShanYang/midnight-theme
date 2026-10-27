@@ -13,3 +13,13 @@ __pycache__/
 moonlight-notes/moonlight.sty
 moonlight-notes/example.pdf
 moonlight-notes/tools/background-preview.jpg
+
+# firefox-ink-koi: the koi painting and everything built from it
+firefox-ink-koi/art.*
+firefox-ink-koi/stroke.*
+firefox-ink-koi/chrome/ink-koi/
+firefox-ink-koi/wallpaper/
+
+# claude-ink-koi: the build with the koi painting in it
+claude-ink-koi/ink-koi-claude-custom.user.css
+claude-ink-koi/tools/.cache/

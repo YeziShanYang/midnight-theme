@@ -1,0 +1,18 @@
+{
+  "name": "midnight-theme",
+  "displayName": "Midnight",
+  "description": "A dark violet theme, matching the Midnight theme for Qt Creator and Overleaf",
+  "version": "1.0.0",
+  "publisher": "midnight-theme",
+  "engines": { "vscode": "^1.80.0" },
+  "categories": ["Themes"],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Midnight",
+        "uiTheme": "vs-dark",
+        "path": "./themes/midnight-color-theme.json"
+      }
+    ]
+  }
+}

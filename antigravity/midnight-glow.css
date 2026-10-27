@@ -1,0 +1,52 @@
+/* ---------------------------------------------------------------------
+   Midnight Glow — soft background glows for Antigravity
+   Antigravity has no setting for background images, so install.sh --glow
+   links this file into the app's workbench.html. Needs the Midnight color
+   theme. @EDITOR_IMAGE@, @EDITOR_POS@ and @EDITOR_SIZE@ are filled in by
+   install.sh: the picture (see README) if there is one, else the stars.
+
+   Gradient sizes are relative to each panel: "160% 160% at 100% 0%"
+   means the glow's centre is the top-right corner and it spreads 1.6x
+   the panel's size. Later colour stops are the fade-out.
+   --------------------------------------------------------------------- */
+
+/* ---- Code editor: violet glow from the top-right ---- */
+.part.editor .editor-container {
+    background:
+        url("@EDITOR_IMAGE@") @EDITOR_POS@ / @EDITOR_SIZE@ no-repeat,
+        radial-gradient(160% 160% at 100% 0%,
+                        #33196a 0%, #231245 30%, #160d2c 60%, #0d0918 85%) !important;
+}
+/* Monaco paints the theme's editor background on these; clear them so the
+   glow shows. Popups (hover, suggest, find) keep their own backgrounds. */
+.part.editor .editor-container .monaco-editor,
+.part.editor .editor-container .monaco-editor .monaco-editor-background,
+.part.editor .editor-container .monaco-editor .margin,
+.part.editor .editor-container .monaco-editor .inputarea.ime-input,
+.part.editor .editor-container .monaco-diff-editor,
+.part.editor .editor-container .monaco-diff-editor .diffOverview {
+    background: transparent !important;
+}
+/* ...except inside peek views, which would otherwise show the glow too */
+.part.editor .editor-container .zone-widget .monaco-editor,
+.part.editor .editor-container .zone-widget .monaco-editor .monaco-editor-background,
+.part.editor .editor-container .zone-widget .monaco-editor .margin {
+    background: #120d20 !important;
+}
+
+/* ---- Sidebar: pink glow from the bottom-left, a few stars at the top ---- */
+.part.sidebar {
+    background:
+        url("stars-sidebar@2x.png") left top / 420px 220px no-repeat,
+        radial-gradient(160% 160% at 0% 100%,
+                        #3a1440 0%, #25112f 35%, #150e24 70%, #120d20 100%) !important;
+}
+.part.sidebar > .content,
+.part.sidebar .composite,
+.part.sidebar .pane,
+.part.sidebar .pane-body,
+.part.sidebar .pane-header,
+.part.sidebar .monaco-list,
+.part.sidebar .monaco-list-rows {
+    background: transparent !important;
+}

@@ -1,0 +1,324 @@
+/* ==UserStyle==
+@name         Ink Koi for Claude
+@namespace    ink-koi-claude
+@version      1.0.0
+@description  Ink koi around the prompt on claude.ai's new chat page, a faint frosted koi behind conversations, and vermilion in place of Claude's clay orange
+@preprocessor default
+@var range koiNew   "Koi strength, new chat"     [100, 0, 100, 5]
+@var range koiChat  "Koi strength, conversations" [30, 0, 100, 5]
+@var range koiFrost "Frosting, conversations"     [3, 0, 12, 1, "px"]
+@var range koiSize  "Koi size, new chat"          [76, 40, 120, 2]
+@var range koiShift "Koi shift right, new chat"   [0, -400, 400, 10, "px"]
+==/UserStyle== */
+
+/* ---------------------------------------------------------------------
+   Source for the .user.css files. Edit this file, then run
+   `python3 build.py`, which swaps the @...@ placeholders for the koi,
+   the greeting font and the seal themselves, so the style needs no
+   hosting.
+
+   The colours go through Claude's own variables, and the koi are a layer
+   that ignores the mouse, so a redesign is unlikely to break either. The
+   greeting, prompt box, send button and sidebar are found by Claude's
+   own markers (class and data-cds names, the button's label), which a
+   redesign may rename.
+
+   The sliders above are in Stylus: click the style's gear icon on the
+   Manage page, or the toolbar popup's gear next to the style.
+   --------------------------------------------------------------------- */
+
+@-moz-document domain("claude.ai") {
+
+/* ---- Palette ----
+   Light is vermilion on Claude's cream, dark a slightly brighter one on
+   Claude's dark grey. Claude says which it's showing with data-mode on
+   the page ("light", "dark" or "system"). */
+:root {
+    --ik-red: #c23a2b;
+    --ik-red-hover: #a83224;
+    --ik-red-hsl: 6 63.7% 46.5%;
+    --ik-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23c23a2b'/%3E%3C/svg%3E");
+    --ik-seal-light: url(@SEAL_LIGHT@);
+    --ik-seal-dark: url(@SEAL_DARK@);
+    --ik-seal: var(--ik-seal-light);
+    --ik-koi-light: url(@KOI_LIGHT@);
+    --ik-koi-dark: url(@KOI_DARK@);
+    --ik-koi-chat-light: url(@KOI_CHAT_LIGHT@);
+    --ik-koi-chat-dark: url(@KOI_CHAT_DARK@);
+    --ik-koi: var(--ik-koi-light);
+    --ik-koi-chat: var(--ik-koi-chat-light);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ik-red: #d24a35;
+        --ik-red-hover: #e0604a;
+        --ik-red-hsl: 8 63.6% 51.6%;
+        --ik-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23d24a35'/%3E%3C/svg%3E");
+        --ik-seal: var(--ik-seal-dark);
+        --ik-koi: var(--ik-koi-dark);
+        --ik-koi-chat: var(--ik-koi-chat-dark);
+    }
+}
+[data-mode=light] {
+    --ik-red: #c23a2b;
+    --ik-red-hover: #a83224;
+    --ik-red-hsl: 6 63.7% 46.5%;
+    --ik-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23c23a2b'/%3E%3C/svg%3E");
+    --ik-seal: var(--ik-seal-light);
+    --ik-koi: var(--ik-koi-light);
+    --ik-koi-chat: var(--ik-koi-chat-light);
+}
+[data-mode=dark] {
+    --ik-red: #d24a35;
+    --ik-red-hover: #e0604a;
+    --ik-red-hsl: 8 63.6% 51.6%;
+    --ik-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23d24a35'/%3E%3C/svg%3E");
+    --ik-seal: var(--ik-seal-dark);
+    --ik-koi: var(--ik-koi-dark);
+    --ik-koi-chat: var(--ik-koi-chat-dark);
+}
+
+/* ---- Clay orange -> vermilion ----
+   Claude's logo, send button and other brand touches are drawn in its
+   clay colour. It's set in two design systems at once: the older one
+   holds colours as bare "H S% L%" numbers, the newer one (--cds-*) as
+   ordinary colours. Both are declared again on nested elements, so the
+   overrides go on those too. */
+:root, [data-theme], [data-mode], [data-cds-theme], .cds-root, .cds-dark-scope {
+    --cds-clay: var(--ik-red) !important;
+    --cds-clay-emphasized: var(--ik-red) !important;
+    --cds-fill-brand: var(--ik-red) !important;
+    --cds-fill-brand-hover: var(--ik-red-hover) !important;
+    --cds-hsl-clay: var(--ik-red-hsl) !important;
+    --cds-hsl-clay-emphasized: var(--ik-red-hsl) !important;
+    --_brand-clay: var(--ik-red-hsl) !important;
+    --_brand-clay-emphasized: var(--ik-red-hsl) !important;
+    --accent-brand: var(--ik-red-hsl) !important;
+    --brand-000: var(--ik-red-hsl) !important;
+    --brand-100: var(--ik-red-hsl) !important;
+    --brand-200: var(--ik-red-hsl) !important;
+}
+
+/* ---- Greeting ----
+   The new-chat greeting in Liu Jian Mao Cao, a brush font in the style of
+   Chinese "grass script", with a stroke of vermilion beneath it. Only the
+   lettering changes; Claude still writes the words. The font is built
+   into the style (Latin letters only), so it doesn't depend on claude.ai
+   allowing fonts from other sites. */
+@font-face {
+    font-family: "Ink Koi Greeting";
+    src: url(@GREETING_FONT@) format("woff2");
+    font-display: block;
+}
+
+
+/* ---- Prompt box: flat paper ----
+   A sheet one shade deeper than the page, with a thin ink edge, small
+   corners and no shadow, in place of the floating white card. While you
+   type, a red line runs along its bottom edge. The shades are mixed from
+   the page's own colours, so they suit light and dark alike. */
+:root, .cds-root, [data-cds=ChatComposer] {
+    --cds-radius-composer: 6px !important;
+}
+[class*="shadow-composer"]:has(.ProseMirror) {
+    background-color: color-mix(in srgb, currentColor 4%, var(--df-bg-page, var(--cds-page-bg, Canvas))) !important;
+    background-image: linear-gradient(var(--ik-red), var(--ik-red)) !important;
+    background-repeat: no-repeat !important;
+    background-position: left bottom !important;
+    background-size: 0% 2px !important;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 16%, transparent) !important;
+    border-radius: 6px !important;
+}
+[class*="shadow-composer"]:has(.ProseMirror):focus-within {
+    background-size: 100% 2px !important;
+}
+
+/* ---- Send button: a round seal ----
+   A worn red seal stamp with 送 ("send"), made by tools/make-assets.py,
+   in place of the arrow. It fades while there's nothing to send. */
+button[aria-label="Send message"] {
+    background: var(--ik-seal) center / 100% 100% no-repeat !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: transparent !important;
+    transition: transform .15s, opacity .15s !important;
+}
+button[aria-label="Send message"] > * {
+    visibility: hidden !important;
+}
+button[aria-label="Send message"]:not(:disabled):hover {
+    transform: scale(1.08) rotate(-3deg);
+}
+button[aria-label="Send message"]:not(:disabled):active {
+    transform: scale(.94);
+}
+button[aria-label="Send message"]:disabled {
+    opacity: .35 !important;
+}
+
+/* ---- Sidebar ----
+   Flat on the page's own colour, with no card or edge shadow. The open
+   chat is marked by a stroke of vermilion beneath it instead of a grey
+   highlight. */
+.dframe-root .dframe-sidebar {
+    --df-web-sidebar-bg: var(--df-bg-page, var(--cds-page-bg)) !important;
+    --df-sidebar-bg: var(--df-bg-page, var(--cds-page-bg)) !important;
+    box-shadow: none !important;
+}
+.dframe-root:not([data-collapsed]) .dframe-sidebar {
+    border-inline-end: 1px solid color-mix(in srgb, currentColor 8%, transparent) !important;
+}
+/* No !important on the size, so that it can be animated (see Motion);
+   the :not(#ik) outranks Claude's own rule for the row instead. */
+.dframe-sidebar [data-row][data-selected]:not(#ik),
+.dframe-sidebar [data-row][data-selected]:not(#ik):hover {
+    background-color: transparent !important;
+    background-image: var(--ik-brush) !important;
+    background-repeat: no-repeat !important;
+    background-position: center bottom 2px !important;
+    background-size: calc(100% - 20px) 4px;
+}
+
+::selection {
+    background-color: color-mix(in srgb, var(--ik-red) 28%, transparent);
+}
+
+/* ---- Motion ----
+   The new-chat greeting writes itself out from the left as the page
+   opens. The brushstrokes grow out from their middle, like ink spreading:
+   the greeting's once it's written, and the sidebar's when you open a
+   chat.
+   The prompt box's red line draws in from the left when you click into
+   it. The koi turn slowly around the prompt box, once every few minutes
+   (build.py sets the speed; the turning is inside the picture, so the
+   clear space around the box stays put). Clicking into the box
+   also sends a faint ripple out from its edge, and sending a message a
+   red one, from the box and from the seal. While Claude is answering it
+   shows a Stop button in place of the seal, and that's what marks a
+   message as sent, so sending with Enter ripples too.
+
+   All of it is off when the system's "reduce motion" setting is on, and
+   all but the koi's turning when Claude's is: the turning runs inside the
+   picture, which can see only the system setting. */
+@keyframes ik-draw-greeting { from { background-size: 0% 6px; } }
+@keyframes ik-write { from { mask-position: 100% 0; } }
+@keyframes ik-draw-row { from { background-size: 0% 4px; } }
+@keyframes ik-ripple {
+    from { outline: 1.5px solid color-mix(in srgb, currentColor 35%, transparent); outline-offset: 0; }
+    to { outline: 1.5px solid transparent; outline-offset: 22px; }
+}
+@keyframes ik-ripple-sent {
+    from { outline: 2px solid var(--ik-red); outline-offset: 0; }
+    to { outline: 2px solid transparent; outline-offset: 44px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    /* The greeting writes itself out: a soft edge of ink sweeps across it
+       from the left, and the stroke beneath grows once it's written. The
+       mask is a gradient two and a half times the greeting's width, solid
+       at its left and clear at its right, slid from right to left. */
+    html:not([data-reduce-motion=true]) [data-new-page-greeting-text] {
+        mask-image: linear-gradient(to right, #000 40%, transparent 60%);
+        mask-size: 250% 100%;
+        mask-repeat: no-repeat;
+        animation: ik-write 1.8s .2s cubic-bezier(.45, .1, .4, 1) backwards,
+                   ik-draw-greeting 1.6s 1.8s cubic-bezier(.3, .6, .3, 1) backwards;
+    }
+    html:not([data-reduce-motion=true]) .dframe-sidebar [data-row][data-selected]:not(#ik) {
+        animation: ik-draw-row 1.05s cubic-bezier(.3, .6, .3, 1) backwards;
+    }
+    html:not([data-reduce-motion=true]) [class*="shadow-composer"]:has(.ProseMirror) {
+        transition: background-size .9s cubic-bezier(.3, .6, .3, 1) !important;
+    }
+    html:not([data-reduce-motion=true]) [class*="shadow-composer"]:has(.ProseMirror):focus-within {
+        animation: ik-ripple .9s ease-out;
+    }
+    /* The focus ripple stays first in the list, so that it isn't played
+       again when the Stop button goes away. */
+    html:not([data-reduce-motion=true]) [class*="shadow-composer"]:has(.ProseMirror):has(button[aria-label^="Stop"]) {
+        animation: ik-ripple .9s ease-out, ik-ripple-sent 1.2s ease-out;
+    }
+    /* The seal: a red ring springs out from it when you let go. */
+    html:not([data-reduce-motion=true]) button[aria-label="Send message"] {
+        outline: 1.5px solid transparent !important;
+        outline-offset: 16px !important;
+        transition: transform .15s, opacity .15s, outline-offset .7s ease-out, outline-color .7s ease-out !important;
+    }
+    html:not([data-reduce-motion=true]) button[aria-label="Send message"]:not(:disabled):active {
+        outline-color: var(--ik-red) !important;
+        outline-offset: 0 !important;
+        transition: transform .15s, opacity .15s !important;
+    }
+}
+
+/* ---- The koi layer ----
+   A layer over the chat pane that lets every click through. It's off
+   here and turned on for the new chat page and for conversations
+   below.
+
+   Claude's pane (.dframe-content-inner) runs under the sidebar and is
+   padded clear of it by --df-sidebar-clearance, the sidebar's width when
+   it's open and 0 when it's collapsed. The layer starts at the same
+   place, so the koi are centred on the visible pane either way. If
+   Claude ever drops that pane, the layer falls back to the whole window,
+   and the "Koi shift right" slider moves the koi over. */
+html::after,
+.dframe-content-inner::after {
+    content: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    pointer-events: none;
+    /* build.py wraps the painting (1.27 times as wide as it is tall) in a
+       square, 1.27 times its width, with room for it to turn in; the
+       square is sized so that the painting comes out at koiSize% of the
+       window's height, or 90% of the pane's width at most. */
+    background: var(--ik-koi) no-repeat calc(50% + var(--koiShift)) 46% / min(calc(var(--koiSize) * 1.616vh), calc(var(--koiSize) * 1.145%)) auto;
+}
+.dframe-content-inner::after {
+    inset-inline-start: calc(var(--df-sidebar-clearance, 0px) + var(--df-content-gutter-start, 0px));
+    inset-inline-end: var(--df-content-gutter, 0px);
+}
+html:has(.dframe-content-inner)::after {
+    content: none !important;
+}
+}
+
+/* ---- New chat: the koi circle the prompt ----
+   The middle of the picture, where the prompt box sits, is faded out
+   so the koi never cross what you're typing. */
+@-moz-document regexp("https://claude\\.ai/(new)?([?#].*)?") {
+html::after,
+.dframe-content-inner::after {
+    content: "";
+    opacity: calc(var(--koiNew) / 100);
+    mask-image: radial-gradient(ellipse min(640px, 55%) 230px at calc(50% + var(--koiShift)) 46%, transparent 50%, #000 100%);
+}
+}
+
+/* The greeting itself: Claude marks its text with
+   data-new-page-greeting-text. */
+@-moz-document regexp("https://claude\\.ai/(new)?([?#].*)?") {
+[data-new-page-greeting-text] {
+    display: inline-block !important;
+    font-family: "Ink Koi Greeting", "Liu Jian Mao Cao", var(--font-ui-serif, Georgia), serif !important;
+    font-variation-settings: normal !important;
+    font-weight: 400 !important;
+    padding-bottom: 10px !important;
+    background: var(--ik-brush) no-repeat center bottom;
+    background-size: 100% 6px;
+}
+}
+
+/* ---- Conversations: the koi as if behind frosted glass ----
+   A copy of the picture that turns more slowly (build.py's TURN_CHAT),
+   and at half resolution, as it's blurred anyway. */
+@-moz-document url-prefix("https://claude.ai/chat/") {
+html::after,
+.dframe-content-inner::after {
+    content: "";
+    background-image: var(--ik-koi-chat);
+    opacity: calc(var(--koiChat) / 100);
+    filter: blur(var(--koiFrost));
+}
+}

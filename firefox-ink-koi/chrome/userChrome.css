@@ -1,0 +1,217 @@
+/* Ink Koi for Firefox: the browser window.
+ *
+ * Paper and ink, with vermilion as the only colour. Follows Firefox's
+ * Light / Dark setting (Settings > General > Website appearance, or the
+ * built-in Light and Dark themes): light is ink on rice paper, dark is
+ * pale ink on black.
+ *
+ * Firefox's own styles set these variables in cascade layers, and a user
+ * stylesheet loses to those unless it uses !important, hence the many
+ * !important below. */
+
+:root {
+  --koi-paper: #f3f0e8;
+  --koi-paper-deep: #e8e4da;   /* URL bar, hovered items */
+  --koi-paper-raised: #fbfaf6; /* the URL bar when focused, menus */
+  --koi-ink: #1b1a18;
+  --koi-ink-soft: rgba(27, 26, 24, 0.55);
+  --koi-ink-faint: rgba(27, 26, 24, 0.10);
+  --koi-red: #c23a2b;
+  --koi-seal: url("ink-koi/seal.png");
+  --koi-top: url("ink-koi/stroke-light.png");
+  --koi-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23c23a2b'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --koi-paper: #141413;
+    --koi-paper-deep: #1f1e1c;
+    --koi-paper-raised: #262522;
+    --koi-ink: #ece8de;
+    --koi-ink-soft: rgba(236, 232, 222, 0.55);
+    --koi-ink-faint: rgba(236, 232, 222, 0.10);
+    --koi-top: url("ink-koi/stroke-dark.png");
+    --koi-red: #d24a35;
+    --koi-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M2 4.2C20 2.6 45 2.2 70 2.6 84 2.9 94 3.4 98 3.1 94 4.4 80 4.6 62 4.5 40 4.4 18 4.9 2 4.2Z' fill='%23d24a35'/%3E%3C/svg%3E");
+  }
+}
+
+/* --- colours, through Firefox's own variables ---------------------------- */
+
+:root {
+  --toolbox-background-color: var(--koi-paper) !important;
+  --toolbox-background-color-inactive: var(--koi-paper) !important;
+  --toolbox-text-color: var(--koi-ink) !important;
+  --toolbox-text-color-inactive: var(--koi-ink-soft) !important;
+  --toolbox-background-gradient: none !important;
+  --toolbox-background-image: none !important;
+  --toolbar-background-color: var(--koi-paper) !important;
+  --toolbar-text-color: var(--koi-ink) !important;
+  --toolbarbutton-icon-fill: var(--koi-ink) !important;
+  --toolbar-button-background-hover: var(--koi-ink-faint) !important;
+  --toolbarbutton-hover-background: var(--koi-ink-faint) !important;
+  --toolbarbutton-active-background: var(--koi-ink-faint) !important;
+
+  --toolbar-field-background-color: var(--koi-paper-deep) !important;
+  --toolbar-field-background-color-focus: var(--koi-paper-raised) !important;
+  --toolbar-field-text-color: var(--koi-ink) !important;
+  --toolbar-field-text-color-focus: var(--koi-ink) !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-border-color-focus: transparent !important;
+  --urlbar-box-background-color: var(--koi-ink-faint) !important;
+  --urlbar-box-background-color-hover: var(--koi-ink-faint) !important;
+  --urlbar-box-text-color: var(--koi-ink) !important;
+
+  --tab-background-color-selected: transparent !important;
+  --tab-background-color-hover: var(--koi-ink-faint) !important;
+  --tab-text-color: var(--koi-ink-soft) !important;
+  --tab-text-color-hover: var(--koi-ink) !important;
+  --tab-text-color-selected: var(--koi-ink) !important;
+  --tab-box-shadow-selected: none !important;
+  --tab-border-color-selected: transparent !important;
+  --tab-border-color-accent: none !important;
+  --tab-icon-fill-loading: var(--koi-red) !important;
+  --tab-attention-dot-color: var(--koi-red) !important;
+
+  --chrome-content-separator-color: transparent !important;
+  --tabs-navbar-separator-color: transparent !important;
+  --focus-outline-color: var(--koi-red) !important;
+  --color-accent-primary: var(--koi-red) !important;
+
+  --panel-background-color: var(--koi-paper-raised) !important;
+  --panel-text-color: var(--koi-ink) !important;
+  --panel-border-color: var(--koi-ink-faint) !important;
+  --panel-separator-color: var(--koi-ink-faint) !important;
+  --panel-icon-fill: var(--koi-ink) !important;
+  --arrowpanel-background: var(--koi-paper-raised) !important;
+  --arrowpanel-color: var(--koi-ink) !important;
+  --arrowpanel-border-color: var(--koi-ink-faint) !important;
+  --urlbarview-background-color-hover: var(--koi-ink-faint) !important;
+
+  --sidebar-background-color: var(--koi-paper) !important;
+  --sidebar-text-color: var(--koi-ink) !important;
+  --sidebar-border-color: transparent !important;
+}
+
+/* A faint brushstroke sweeps along the top of the window, behind the tabs.
+ * Set --koi-top to none above to remove it. */
+#navigator-toolbox {
+  background: var(--koi-top) no-repeat left 4% top -14px / 74% 40px,
+              var(--koi-paper) !important;
+  border-bottom: none !important;
+}
+
+#TabsToolbar,
+#nav-bar,
+#PersonalToolbar {
+  background: transparent !important;
+  color: var(--koi-ink) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* --- tabs ---------------------------------------------------------------- */
+
+/* No boxes: tabs are just labels on the paper. */
+.tab-background {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.tabbrowser-tab:hover > .tab-stack > .tab-background:not([selected]) {
+  background: var(--koi-ink-faint) !important;
+}
+
+/* The selected tab: full-strength ink and a stroke of vermilion beneath. */
+.tabbrowser-tab[selected] > .tab-stack > .tab-background {
+  background: var(--koi-stroke) no-repeat center bottom 2px / calc(100% - 20px) 5px !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] .tabbrowser-tab[selected] > .tab-stack > .tab-background {
+  background: var(--koi-ink-faint) !important;
+}
+
+.tabbrowser-tab:not([selected]) .tab-label {
+  opacity: 0.8;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  font-weight: 500;
+}
+
+/* Favicons of background tabs fade a little, like wet ink drying. */
+.tabbrowser-tab:not([selected], :hover) .tab-icon-image {
+  opacity: 0.6;
+}
+
+/* The painting's red seal sits in the empty end of the tab strip. Tabs
+ * cover it as they fill up. Set --koi-seal to none above to remove it. */
+#tabbrowser-arrowscrollbox {
+  background: var(--koi-seal) no-repeat right 10px center / auto 18px !important;
+}
+
+#tabbrowser-tabs[orient="vertical"] #tabbrowser-arrowscrollbox {
+  background: none !important;
+}
+
+/* --- URL bar ------------------------------------------------------------- */
+
+#urlbar-background {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Focused: a thin red line, as if drawn with the brush tip. */
+#urlbar:is([focused], [open]) > #urlbar-background {
+  box-shadow: inset 0 -1.5px 0 var(--koi-red) !important;
+}
+
+#urlbar ::selection {
+  background-color: var(--koi-red) !important;
+  color: var(--koi-paper) !important;
+}
+
+.urlbarView-row[selected] {
+  background: var(--koi-ink-faint) !important;
+  color: var(--koi-ink) !important;
+}
+
+.urlbarView-url,
+.urlbarView-action {
+  color: var(--koi-ink-soft) !important;
+}
+
+/* --- menus and panels ---------------------------------------------------- */
+
+menupopup,
+panel {
+  --panel-background: var(--koi-paper-raised) !important;
+  --panel-color: var(--koi-ink) !important;
+  --panel-border-color: var(--koi-ink-faint) !important;
+  --menuitem-hover-background-color: var(--koi-ink-faint) !important;
+  --menu-background-color: var(--koi-paper-raised) !important;
+  --menu-color: var(--koi-ink) !important;
+  --menu-border-color: var(--koi-ink-faint) !important;
+}
+
+/* --- sidebar and content edge -------------------------------------------- */
+
+#sidebar-main,
+#sidebar-box,
+#sidebar-header {
+  background: var(--koi-paper) !important;
+  color: var(--koi-ink) !important;
+}
+
+#tabbrowser-tabbox,
+#tabbrowser-tabpanels {
+  background: var(--koi-paper) !important;
+}
+
+.browserStack > browser {
+  box-shadow: none !important;
+  outline: none !important;
+}
